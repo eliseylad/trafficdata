@@ -1,5 +1,6 @@
 from cv2 import cv2
 import dlib
+import keyboard
 
 face=cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 dl_face=dlib.get_frontal_face_detector()
@@ -9,12 +10,14 @@ eye=cv2.CascadeClassifier('haarcascade_eye.xml')
 nose=cv2.CascadeClassifier('nose.xml')
 mouth=cv2.CascadeClassifier('mouth.xml')
 
-cap=cv2.VideoCapture(0)
+#cap=cv2.VideoCapture(0)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out=cv2.VideoWriter('out.avi',fourcc, 20.0, (640,480))
+out=cv2.VideoWriter('out.avi',fourcc, 30.0, (1280,720))
+video_capture = cv2.VideoCapture("20210115_011257.mp4")
 
-while(cap.isOpened()):
-    success, img=cap.read() 
+while(video_capture.isOpened()):
+    #success, img=cap.read() 
+    success,img=video_capture.read()
     img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     #используя opencv и каскадные файлы
@@ -44,9 +47,12 @@ while(cap.isOpened()):
             x=face_landmark.part(i).x
             y=face_landmark.part(i).y
             cv2.circle(img, (x,y), 4, (255,0,0), -1)
-            
-    out.write(img)        
-    cv2.imshow('rez',img)
+    if success:          
+        out.write(img)        
+    #cv2.imshow('rez',img)
     if cv2.waitKey(1) and 0xff==ord('q'):
         break
-cap.release()
+    if keyboard.is_pressed('q'):
+        break
+#cap.release()
+video_capture.release()
